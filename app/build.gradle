@@ -4,6 +4,29 @@ plugins {
 }
 
 android {
+    def envConfig
+    flavorDimensions "default"
+    productFlavors {
+        local {
+            envConfig = getProps('config/local.properties')
+            applicationId envConfig.getProperty("APPLICATION_ID").replace("\"", "")
+            versionCode envConfig.VERSION_CODE.replace("\"", "").toInteger()
+            versionName envConfig.VERSION_NAME.replace("\"", "")
+        }
+        dev {
+            envConfig = getProps('config/dev.properties')
+            applicationId envConfig.getProperty("APPLICATION_ID").replace("\"", "")
+            versionCode envConfig.VERSION_CODE.replace("\"", "").toInteger()
+            versionName envConfig.VERSION_NAME.replace("\"", "")
+        }
+        prod {
+            envConfig = getProps('config/prod.properties')
+            applicationId envConfig.getProperty("APPLICATION_ID").replace("\"", "")
+            versionCode envConfig.VERSION_CODE.replace("\"", "").toInteger()
+            versionName envConfig.VERSION_NAME.replace("\"", "")
+        }
+    }
+
     compileSdk 31
 
     defaultConfig {
@@ -14,6 +37,25 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def stringKeyList = ['APP_NAME', 'VERSION_CODE', 'VERSION_NAME', 'APPLICATION_ID', 'SKIP_LOGIN', 'BASE_URL', 'USERNAME', 'PASSWORD']
+        def intKeyList = ['CONNECT_TIMEOUT', 'READ_TIMEOUT', 'CURRENT_TIMEOUT', 'CURRENT_RETRY_COUNT']
+        def boolKeyList = ['SKIP_LOGIN']
+
+        rootProject.ext.config.each(p -> {
+            def key = p.key, value = p.value
+            if (intKeyList.contains(key)) {
+                buildConfigField 'int', key, value
+            } else if (boolKeyList.contains(key)) {
+                buildConfigField 'boolean', key, value
+            } else if (stringKeyList.contains(key)) {
+                if (key == 'APP_NAME') {
+                    resValue 'string', key.toLowerCase(), value.replace("\"", "")
+                } else {
+                    buildConfigField 'String', key, value
+                }
+            }
+        })
     }
 
     buildTypes {
@@ -23,11 +65,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 }
 

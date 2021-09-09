@@ -1,3 +1,6 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
@@ -11,6 +14,36 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+}
+
+def getProps(path) {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(path)))
+    return props
+}
+
+def getCurrentFlavor() {
+    Gradle gradle = getGradle()
+    def pattern = Pattern.compile("([A-Z][A-Za-z]+)(Release|Debug)")
+    def flavor = ""
+
+    gradle.getStartParameter().getTaskNames().any { name ->
+        Matcher matcher = pattern.matcher(name)
+        if (matcher.find()) {
+            flavor = matcher.group(1).toLowerCase()
+            return true
+        }
+    }
+    return flavor
+}
+
+ext {
+    flavor = getCurrentFlavor()
+    if (flavor.isEmpty()) {
+        flavor = "dev"
+    }
+
+    config = getProps("${rootDir}/config/${flavor}.properties")
 }
 
 task clean(type: Delete) {

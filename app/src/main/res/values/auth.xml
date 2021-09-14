@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter_username">Username</string>
+    <string name="enter_password">Password</string>
+    <string name="log_in">Login</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="don_t_have_an_account_register_now">Don\'t have an account? <b>Register Now</b></string>
+</resources>

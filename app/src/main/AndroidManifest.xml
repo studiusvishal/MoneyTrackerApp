@@ -15,7 +15,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="com.bhavsar.vishal.moneytrackerapp.ui.auth.AuthActivity"
+            android:name=".ui.home.HomeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.auth.AuthActivity"
             android:exported="true"
             android:label="@string/title_activity_auth" />
         <activity

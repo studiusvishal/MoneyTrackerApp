@@ -52,8 +52,7 @@
             android:id="@+id/editTextLoginUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="admin" />
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password -->
@@ -76,8 +75,7 @@
             android:id="@+id/editTextLoginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:text="password" />
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textview.MaterialTextView

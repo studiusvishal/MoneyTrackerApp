@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.bhavsar.vishal.moneytrackerapp.data.network.AuthApi
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.repository.AuthRepository
 import com.bhavsar.vishal.moneytrackerapp.databinding.FragmentLoginBinding
 import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseFragment
+import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepository>() {
 
@@ -18,6 +20,9 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Resource.Success -> {
+                    lifecycleScope.launch {
+                        userPreferences.saveAuthToken(it.value.token)
+                    }
                     Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Failure -> {

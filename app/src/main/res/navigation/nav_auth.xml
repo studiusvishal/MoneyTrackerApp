@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.bhavsar.vishal.moneytrackerapp.auth.LoginFragment"
+        android:name="com.bhavsar.vishal.moneytrackerapp.ui.auth.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/RegisterFragment"
-        android:name="com.bhavsar.vishal.moneytrackerapp.auth.RegisterFragment"
+        android:name="com.bhavsar.vishal.moneytrackerapp.ui.auth.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" />
 </navigation>

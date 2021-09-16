@@ -1,4 +1,4 @@
-package com.bhavsar.vishal.moneytrackerapp.auth
+package com.bhavsar.vishal.moneytrackerapp.ui.auth
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

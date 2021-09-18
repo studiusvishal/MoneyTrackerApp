@@ -26,11 +26,11 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
         binding.loginProgressBar.visible(false)
         binding.buttonLogin.enable(false)
 
-        viewModel.loginResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.loginResponse.observe(viewLifecycleOwner, {
             binding.loginProgressBar.visible(false)
             when (it) {
                 is Resource.Success -> {
-                    viewModel.saveAuthToken(it.value.token)
+                    viewModel.saveAuthToken(it.value.user.token!!)
                     requireActivity().startNewActivity(HomeActivity::class.java)
                 }
                 is Resource.Failure -> {

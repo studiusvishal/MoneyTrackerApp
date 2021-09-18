@@ -4,15 +4,54 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.bhavsar.vishal.moneytrackerapp.R
+import androidx.lifecycle.Observer
+import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
+import com.bhavsar.vishal.moneytrackerapp.data.network.UserApi
+import com.bhavsar.vishal.moneytrackerapp.data.payload.responses.User
+import com.bhavsar.vishal.moneytrackerapp.data.repository.UserRepository
+import com.bhavsar.vishal.moneytrackerapp.databinding.FragmentHomeBinding
+import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseFragment
+import com.bhavsar.vishal.moneytrackerapp.ui.visible
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
-class HomeFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, UserRepository>() {
+    override fun getViewModel() = HomeViewModel::class.java
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentHomeBinding.inflate(inflater, container, false)
+
+    override fun getFragmentRepository(): UserRepository {
+        val token = runBlocking { userPreferences.authToken.first() }
+        val api = remoteDataSource.buildApi(UserApi::class.java, token)
+        return UserRepository(api)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.progressbar.visible(false)
+        viewModel.getUser()
+        viewModel.user.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Resource.Success -> {
+                    binding.progressbar.visible(false)
+                    updateUI(it.value.user)
+                }
+                is Resource.Loading -> {
+                    binding.progressbar.visible(true)
+                }
+            }
+        })
+    }
+
+    private fun updateUI(user: User) {
+        with(binding) {
+            textViewId.text = user.id.toString()
+            textViewName.text = user.name
+            textViewEmail.text = user.email
+        }
     }
 }

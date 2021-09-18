@@ -1,6 +1,6 @@
 package com.bhavsar.vishal.moneytrackerapp.data.payload.responses
 
-data class LoginResponse(
+data class User(
     val email: String,
     val enabled: Boolean,
     val id: Int,

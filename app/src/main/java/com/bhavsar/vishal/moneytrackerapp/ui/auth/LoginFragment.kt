@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.bhavsar.vishal.moneytrackerapp.data.network.AuthApi
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.repository.AuthRepository
@@ -16,7 +14,6 @@ import com.bhavsar.vishal.moneytrackerapp.ui.enable
 import com.bhavsar.vishal.moneytrackerapp.ui.home.HomeActivity
 import com.bhavsar.vishal.moneytrackerapp.ui.startNewActivity
 import com.bhavsar.vishal.moneytrackerapp.ui.visible
-import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepository>() {
 
@@ -26,11 +23,11 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
         binding.loginProgressBar.visible(false)
         binding.buttonLogin.enable(false)
 
-        viewModel.loginResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.loginResponse.observe(viewLifecycleOwner, {
             binding.loginProgressBar.visible(false)
             when (it) {
                 is Resource.Success -> {
-                    viewModel.saveAuthToken(it.value.token)
+                    viewModel.saveAuthToken(it.value.token!!)
                     requireActivity().startNewActivity(HomeActivity::class.java)
                 }
                 is Resource.Failure -> {

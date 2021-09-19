@@ -35,7 +35,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, UserReposi
         binding.progressbar.visible(false)
         viewModel.getUser()
         viewModel.user.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Resource.Success -> {
                     binding.progressbar.visible(false)
                     updateUI(it.value)

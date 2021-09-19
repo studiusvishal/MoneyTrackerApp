@@ -31,6 +31,7 @@
         app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addExpenseFab"
         android:layout_width="wrap_content"
@@ -41,6 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/addFab"
         app:layout_constraintEnd_toEndOf="@+id/addFab"
         app:srcCompat="@drawable/ic_expense" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addMoneyTransferFab"
         android:layout_width="wrap_content"
@@ -59,6 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/fragmentContainerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
         <com.google.android.material.bottomappbar.BottomAppBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

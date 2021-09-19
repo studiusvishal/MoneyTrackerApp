@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.bhavsar.vishal.moneytrackerapp.data.network.AuthApi
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.repository.AuthRepository
 import com.bhavsar.vishal.moneytrackerapp.databinding.FragmentLoginBinding
 import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseFragment
 import com.bhavsar.vishal.moneytrackerapp.ui.enable
+import com.bhavsar.vishal.moneytrackerapp.ui.handleApiError
 import com.bhavsar.vishal.moneytrackerapp.ui.home.HomeActivity
 import com.bhavsar.vishal.moneytrackerapp.ui.startNewActivity
 import com.bhavsar.vishal.moneytrackerapp.ui.visible
+import kotlinx.coroutines.launch
 
 class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepository>() {
 
@@ -24,15 +27,15 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
         binding.buttonLogin.enable(false)
 
         viewModel.loginResponse.observe(viewLifecycleOwner, {
-            binding.loginProgressBar.visible(false)
+            binding.loginProgressBar.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Success -> {
-                    viewModel.saveAuthToken(it.value.token!!)
-                    requireActivity().startNewActivity(HomeActivity::class.java)
+                    lifecycleScope.launch {
+                        viewModel.saveAuthToken(it.value.token!!)
+                        requireActivity().startNewActivity(HomeActivity::class.java)
+                    }
                 }
-                is Resource.Failure -> {
-                    Toast.makeText(requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
-                }
+                is Resource.Failure -> handleApiError(it)
             }
         })
 
@@ -45,7 +48,6 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
             val username = binding.editTextLoginUsername.text.toString().trim()
             val password = binding.editTextLoginPassword.text.toString().trim()
             // TODO: Add input validations
-            binding.loginProgressBar.visible(true)
             viewModel.login(username, password)
         }
     }

@@ -1,6 +1,7 @@
 package com.bhavsar.vishal.moneytrackerapp.data.repository
 
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
+import com.bhavsar.vishal.moneytrackerapp.data.network.UserApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -23,5 +24,9 @@ abstract class BaseRepository {
                 }
             }
         }
+    }
+
+    suspend fun logout(api: UserApi) = safeApiCall {
+        api.logout()
     }
 }

@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.payload.responses.expense.AddExpenseCategoryResponse
+import com.bhavsar.vishal.moneytrackerapp.data.repository.BaseRepository
 import com.bhavsar.vishal.moneytrackerapp.data.repository.ExpenseRepository
+import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class ExpenseCategoryViewModel(
     private val expenseRepository: ExpenseRepository
-) : ViewModel() {
+) : BaseViewModel(expenseRepository) {
     private val _addCategoryResponse: MutableLiveData<Resource<AddExpenseCategoryResponse>> =
         MutableLiveData()
     val addCategoryResponse: LiveData<Resource<AddExpenseCategoryResponse>>

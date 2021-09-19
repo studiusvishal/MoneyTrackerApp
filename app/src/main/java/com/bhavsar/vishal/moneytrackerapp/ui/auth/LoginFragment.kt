@@ -35,7 +35,9 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
                         requireActivity().startNewActivity(HomeActivity::class.java)
                     }
                 }
-                is Resource.Failure -> handleApiError(it)
+                is Resource.Failure -> handleApiError(it) {
+                    login()
+                }
             }
         })
 
@@ -45,11 +47,14 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
         }
 
         binding.buttonLogin.setOnClickListener {
-            val username = binding.editTextLoginUsername.text.toString().trim()
-            val password = binding.editTextLoginPassword.text.toString().trim()
-            // TODO: Add input validations
-            viewModel.login(username, password)
+            login()
         }
+    }
+
+    private fun login() {
+        val username = binding.editTextLoginUsername.text.toString().trim()
+        val password = binding.editTextLoginPassword.text.toString().trim()
+        viewModel.login(username, password)
     }
 
     override fun getViewModel() = AuthViewModel::class.java

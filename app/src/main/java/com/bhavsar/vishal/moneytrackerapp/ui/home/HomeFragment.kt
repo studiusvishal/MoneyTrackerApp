@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.network.UserApi
+<<<<<<< HEAD
 import com.bhavsar.vishal.moneytrackerapp.data.payload.responses.LoginResponse
+=======
+import com.bhavsar.vishal.moneytrackerapp.data.payload.responses.User
+>>>>>>> 80ca19bea32b76c8e4270b1d0133d2d2286f7109
 import com.bhavsar.vishal.moneytrackerapp.data.repository.UserRepository
 import com.bhavsar.vishal.moneytrackerapp.databinding.FragmentHomeBinding
 import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseFragment
@@ -38,7 +42,11 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, UserReposi
             when(it) {
                 is Resource.Success -> {
                     binding.progressbar.visible(false)
+<<<<<<< HEAD
                     updateUI(it.value)
+=======
+                    updateUI(it.value.user)
+>>>>>>> 80ca19bea32b76c8e4270b1d0133d2d2286f7109
                 }
                 is Resource.Loading -> {
                     binding.progressbar.visible(true)
@@ -47,7 +55,11 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding, UserReposi
         })
     }
 
+<<<<<<< HEAD
     private fun updateUI(user: LoginResponse) {
+=======
+    private fun updateUI(user: User) {
+>>>>>>> 80ca19bea32b76c8e4270b1d0133d2d2286f7109
         with(binding) {
             textViewId.text = user.id.toString()
             textViewName.text = user.name

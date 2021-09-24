@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/RegisterFragment">
+    app:startDestination="@id/LoginFragment">
 
     <fragment
         android:id="@+id/LoginFragment"
@@ -19,7 +19,7 @@
         android:id="@+id/RegisterFragment"
         android:name="com.bhavsar.vishal.moneytrackerapp.ui.auth.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
+        tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_RegisterFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />

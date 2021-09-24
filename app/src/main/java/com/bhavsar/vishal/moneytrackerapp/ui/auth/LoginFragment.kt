@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import com.bhavsar.vishal.moneytrackerapp.R
 import com.bhavsar.vishal.moneytrackerapp.data.network.AuthApi
 import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
 import com.bhavsar.vishal.moneytrackerapp.data.repository.AuthRepository
@@ -47,6 +49,10 @@ class LoginFragment : BaseFragment<AuthViewModel, FragmentLoginBinding, AuthRepo
 
         binding.buttonLogin.setOnClickListener {
             login()
+        }
+
+        binding.textViewRegisterNow.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.action_LoginFragment_to_RegisterFragment)
         }
     }
 

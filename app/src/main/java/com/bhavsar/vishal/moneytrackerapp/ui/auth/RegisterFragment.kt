@@ -1,60 +1,92 @@
 package com.bhavsar.vishal.moneytrackerapp.ui.auth
 
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.bhavsar.vishal.moneytrackerapp.R
+import com.bhavsar.vishal.moneytrackerapp.data.network.AuthApi
+import com.bhavsar.vishal.moneytrackerapp.data.network.Resource
+import com.bhavsar.vishal.moneytrackerapp.data.repository.AuthRepository
+import com.bhavsar.vishal.moneytrackerapp.databinding.FragmentRegisterBinding
+import com.bhavsar.vishal.moneytrackerapp.ui.base.BaseFragment
+import com.bhavsar.vishal.moneytrackerapp.ui.enable
+import com.bhavsar.vishal.moneytrackerapp.ui.handleApiError
+import com.bhavsar.vishal.moneytrackerapp.ui.snackbar
+import com.bhavsar.vishal.moneytrackerapp.ui.visible
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class RegisterFragment : BaseFragment<AuthViewModel, FragmentRegisterBinding, AuthRepository>() {
+    override fun getViewModel() = AuthViewModel::class.java
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RegisterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    )= FragmentRegisterBinding.inflate(inflater, container, false)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun getFragmentRepository() =
+        AuthRepository(remoteDataSource.buildApi(AuthApi::class.java), userPreferences)
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding.signUpProgressBar.visible(false)
+        binding.buttonSignUp.enable(false)
+
+        viewModel.signUpResponse.observe(viewLifecycleOwner, {
+            binding.signUpProgressBar.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Success -> {
+                    lifecycleScope.launch {
+                        requireView().snackbar(it.value.message)
+                    }
+                }
+                is Resource.Failure -> handleApiError(it) { // TODO: update to handle errors for sign up
+                    // login()
+                }
+            }
+        })
+
+        binding.editTextConfirmPassword.addTextChangedListener {
+            val fullName = binding.editTextSignUpFullName.text.toString().trim()
+            val email = binding.editTextSignUpEmail.text.toString().trim()
+            val username = binding.editTextSignUpUsername.text.toString().trim()
+            val password = binding.editTextSignUpPassword.text.toString().trim()
+            val confirmPassword = it.toString().trim()
+            val valid = username.isNotEmpty()
+                    && confirmPassword.isNotEmpty()
+                    && fullName.isNotEmpty()
+                    && email.isNotEmpty()
+                    && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                    && password.isNotEmpty()
+                    && confirmPassword == password
+            binding.buttonSignUp.enable(valid)
+        }
+
+        binding.buttonSignUp.setOnClickListener {
+            signUp()
+        }
+
+        binding.textViewLogin.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.action_RegisterFragment_to_LoginFragment)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
-    }
+    private fun signUp() {
+        val fullName = binding.editTextSignUpFullName.text.toString().trim()
+        val email = binding.editTextSignUpEmail.text.toString().trim()
+        val username = binding.editTextSignUpUsername.text.toString().trim()
+        val password = binding.editTextSignUpPassword.text.toString().trim()
+        val confirmPassword = binding.editTextConfirmPassword.text.toString().trim()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegisterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        if (confirmPassword != password) {
+            binding.editTextSignUpPassword.error = "Passwords don\'t match."
+            binding.editTextConfirmPassword.error = "Passwords don\'t match."
+            return
+        }
+        viewModel.signUp(fullName, username, email, password)
     }
 }
